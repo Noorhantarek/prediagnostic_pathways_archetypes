@@ -1,113 +1,95 @@
-# Cohort Construction for Longitudinal Primary-Care Data
+# Pre-diagnostic Pathway Archetypes for Breast and Lung Cancer
 
-This repository contains an **annotated R implementation of a cohort-construction workflow** developed for research using longitudinal primary-care electronic health record (EHR) data.
+This repository contains annotated R code from an MSc dissertation exploring whether clinically meaningful **pre-diagnostic pathway archetypes** can be identified from longitudinal primary-care data using multichannel sequence analysis and unsupervised clustering.
 
-The public code focuses on the analytical methodology: mapping diagnosis code lists, identifying index diagnoses, applying eligibility criteria, excluding prior cancer, and extracting a 24-month pre-diagnostic observation window.
+The public repository focuses on the **analytical methodology** rather than reproducing the restricted-data analysis. No patient-level data, patient identifiers, source extracts, internal directory paths, project IDs, restricted medical-dictionary extracts, or disclosure-sensitive results are included.
 
-## What this repository demonstrates
-
-- Working with large longitudinal EHR extracts in R
-- Mapping SNOMED CT concepts to source-database medical codes
-- Memory-conscious, file-by-file processing with `data.table`
-- Defining an index diagnosis from longitudinal records
-- Building an auditable inclusion/exclusion pipeline
-- Identifying prior diagnoses relative to a patient-specific index date
-- Defining and extracting a pre-diagnostic observation window
-- Applying reproducible quality-control checks
-
-## Cohort-construction workflow
+## Analytical workflow
 
 ```text
-Diagnosis code lists
-        |
-        v
-Map clinical concepts to source medical codes
-        |
-        v
-Search longitudinal observation records
-        |
-        v
-Identify earliest qualifying diagnosis
-        |
-        v
-Define patient-specific index date
-        |
-        v
-Link patient eligibility information
-        |
-        v
-Apply inclusion / exclusion criteria
-        |
-        +-- acceptable patient record
-        +-- eligible age range
-        +-- valid index date
-        +-- registered at index date
-        +-- >= 24 months prior registration
-        +-- no prior cancer diagnosis
-        +-- cancer-specific eligibility criteria
-        |
-        v
-Final analytical cohort
-        |
-        v
-Define index - 24 months to index - 1 day
-        |
-        v
-Extract pre-diagnostic healthcare events
+Cohort construction
+        ↓
+Pathway exploration
+        ↓
+Clinical feature engineering
+        ↓
+Three-channel state construction
+        ↓
+Multichannel sequence analysis
+        ↓
+Optimal Matching distance estimation
+        ↓
+Hierarchical clustering and validation
+        ↓
+Pathway archetype interpretation
+        ↓
+Deprivation / equity analysis
 ```
 
 ## Repository structure
 
 ```text
-.
-├── README.md
-├── .gitignore
-└── R/
-    └── cohort_construction_public.R
+R/
+├── 01_cohort_construction.R
+├── 02_pathway_exploration.R
+├── 03_clinical_feature_engineering.R
+├── 04_sequence_state_construction.R
+├── 05_multichannel_sequence_analysis.R
+├── 06_clustering_archetypes.R
+└── 07_deprivation_analysis.R
 ```
 
-## Data availability and confidentiality
+### 01 — Cohort construction
+Identifies eligible cancer patients, defines the index diagnosis, applies inclusion/exclusion criteria, and establishes the pre-diagnostic observation window.
 
-The original research was conducted using **restricted-access patient-level health data**.
+### 02 — Pathway exploration
+Examines the observation, consultation, and referral channels before sequence construction, including temporal activity patterns and aggregate code-frequency summaries.
 
-**No patient-level data, patient identifiers, restricted data extracts, derived patient-level outputs, internal directory paths, project identifiers, or credentials are included in this repository.**
+### 03 — Clinical feature engineering
+Maps high-dimensional coded observations into clinically interpretable analytical features such as cancer-relevant red-flag symptoms, imaging/investigation activity, emergency presentation, and referral urgency. Exact production codelists used in the restricted environment are not distributed publicly.
 
-The code has been deliberately generalised for public demonstration. Source paths and filenames are placeholders, and some variable names have been made more descriptive. The script therefore **will not run as-is** without appropriately structured source data and approved code lists.
+### 04 — Sequence-state construction
+Divides the 24-month pre-diagnostic period into eight non-uniform time slots and creates three patient-level state channels:
 
-Researchers using restricted-access data should follow the governance, disclosure-control and code-sharing requirements of their own data provider and institution.
+- **Observation:** no activity / other clinical activity / imaging / red flag / emergency
+- **Consultation:** no consultation / low / medium / high intensity
+- **Referral:** no referral / routine / urgent / emergency
+
+Missing activity is explicitly represented as a `NONE` state rather than treated as missing data.
+
+### 05 — Multichannel sequence analysis
+Creates TraMineR sequence objects for the three channels and estimates multichannel Optimal Matching distances using transition-rate-derived substitution costs and equal channel weights.
+
+### 06 — Clustering and pathway archetypes
+Applies Ward.D2 hierarchical clustering to the multichannel distance matrices. Candidate solutions are evaluated using silhouette width, cluster size, multiple internal validity indices, sequence plots, temporal composition, and clinical interpretability.
+
+### 07 — Deprivation analysis
+Examines whether pathway archetype membership varies across deprivation quintiles using descriptive distributions, chi-squared tests, standardised residuals, and ordered trend tests.
 
 ## Software
 
-The workflow uses:
+The workflow uses R packages including:
 
-- R
 - `data.table`
-- `lubridate`
+- `TraMineR`
+- `cluster`
+- `WeightedCluster`
+- `ggplot2`
 
-## Main script
+## Data governance
 
-[`R/cohort_construction_public.R`](R/cohort_construction_public.R) contains the annotated public implementation.
+The original research was conducted using restricted-access health data. This public code has therefore been deliberately generalised:
 
-The script is organised into:
+- data paths and filenames are placeholders;
+- no row-level data are supplied;
+- no patient identifiers are shown;
+- no restricted source-database codelists or dictionary extracts are distributed;
+- source-derived cohort counts and statistical results are not hard-coded;
+- code that would save restricted outputs is disabled/commented in the public version.
 
-1. Configuration
-2. Diagnosis code-list mapping
-3. Candidate diagnosis identification
-4. Index-date definition
-5. Patient-data linkage
-6. Cohort eligibility criteria
-7. Prior-cancer exclusion
-8. Cancer-specific eligibility
-9. Pre-diagnostic window definition
-10. Event extraction
-11. Quality-control checks
-
-## Reproducibility note
-
-The public repository demonstrates the **analytical logic rather than reproducing the restricted analysis**. Counts and patient-level examples from the source data are intentionally omitted.
+The scripts are intended to demonstrate the analytical workflow and will not run as-is without appropriately structured, authorised source data.
 
 ## Author
 
-Nourhan Ibrahim
-
-MSc research project, 2026.
+Nourhan Ibrahim  
+MSc dissertation, 2026
