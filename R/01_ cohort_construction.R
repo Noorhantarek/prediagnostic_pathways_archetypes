@@ -12,8 +12,6 @@
 # - Variable names are made more descriptive where practical.
 # - This script is illustrative and will not run without appropriately structured
 #   source data and code lists.
-# - Check the data provider's governance requirements before adapting this code
-#   to any restricted-access dataset.
 # ==============================================================================
 
 library(data.table)
@@ -23,8 +21,6 @@ library(lubridate)
 # 1. Configuration
 # ------------------------------------------------------------------------------
 
-# Keep paths outside the analytical logic so the workflow is portable.
-# Never hard-code restricted environment paths in a public repository.
 data_dir     <- "path/to/restricted/source/data"
 codelist_dir <- "path/to/codelists"
 output_dir   <- "path/to/approved/output"
@@ -36,7 +32,7 @@ extraction_date <- as.Date("YYYY-MM-DD")
 
 minimum_age    <- 18L
 maximum_age    <- 100L
-lookback_days  <- 730L   # approximately 24 months
+lookback_days  <- 730L   # approximately 24 months (according to my study design)
 
 
 # ------------------------------------------------------------------------------
@@ -44,7 +40,7 @@ lookback_days  <- 730L   # approximately 24 months
 # ------------------------------------------------------------------------------
 
 # Read public/approved SNOMED CT code lists as character values. Keeping clinical
-# codes as character strings prevents long identifiers being converted to
+# codes as character strings, to prevent long identifiers being converted to
 # scientific notation.
 
 lung_codes <- fread(
@@ -58,7 +54,7 @@ breast_codes <- fread(
 )
 
 # The source data use an internal medical-code identifier. Map SNOMED CT concepts
-# to that identifier using the approved medical dictionary.
+# to that identifier using the approved medical dictionary.(Every CPRD Aurum data chunck should have one)
 medical_dictionary <- fread(
   file.path(data_dir, "medical_dictionary.txt"),
   sep = "\t",
@@ -95,7 +91,7 @@ diagnosis_codes <- rbindlist(
 # 3. Identify candidate diagnosis records
 # ------------------------------------------------------------------------------
 
-# Large EHR extracts may be split across many files. Processing files
+# Large EHR extracts are usually split across many files. Processing files
 # sequentially reduces peak memory use compared with loading the full dataset.
 
 observation_files <- list.files(
@@ -161,6 +157,7 @@ cancer_observations[, obsdate := as.Date(obsdate, format = "%d/%m/%Y")]
 
 # Order diagnosis records chronologically within patient and retain the earliest
 # qualifying diagnosis as the index event.
+
 setorder(cancer_observations, patid, obsdate)
 
 index_dates <- cancer_observations[
@@ -244,7 +241,7 @@ cohort <- merge(
 # ------------------------------------------------------------------------------
 
 # Helper function for an auditable filtering workflow. It reports how many rows
-# remain after each criterion without hard-coding any restricted-data results.
+# remain after each criterion.
 log_step <- function(step_name, dt, previous_n) {
 
   current_n  <- nrow(dt)
@@ -382,7 +379,7 @@ n <- log_step("No prior cancer diagnosis", cohort, n)
 # 8. Apply cancer-specific eligibility rule
 # ------------------------------------------------------------------------------
 
-# Example of a pre-specified cancer-specific criterion used in the study.
+# Example of a pre-specified cancer-specific criterion used in the study.(excluding males diagnosed with BC)
 # Confirm coding conventions and protocol requirements before reuse.
 cohort <- cohort[
   !(cancer_type == "breast cancer" & gender == 1)
@@ -411,7 +408,7 @@ window_lookup <- cohort[
 
 
 # ------------------------------------------------------------------------------
-# 10. Extract events occurring within the pre-diagnostic window
+# 10. Extract events occurring within the pre-diagnostic window (according to study design)
 # ------------------------------------------------------------------------------
 
 pathway_observations <- vector("list", length(observation_files))
@@ -473,8 +470,6 @@ pathway_observations <- rbindlist(
 # 11. Quality-control checks
 # ------------------------------------------------------------------------------
 
-# Keep QC checks aggregate in public code. Do not print individual patient
-# records or restricted-data results to a public repository.
 
 stopifnot(uniqueN(cohort$patid) == nrow(cohort))
 stopifnot(all(cohort$index_date >= study_start))
@@ -489,7 +484,6 @@ message("Cohort-construction workflow completed successfully.")
 # 12. Outputs
 # ------------------------------------------------------------------------------
 
-# Do not commit restricted-data outputs to GitHub.
 # Save only to an approved secure location when running in the authorised
 # research environment.
 
