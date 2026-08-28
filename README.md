@@ -1,5 +1,7 @@
 # Pre-diagnostic Pathway Archetypes for Breast and Lung Cancer
 
+Patients follow very different routes to a cancer diagnosis — some direct, others long and circuitous through repeated GP visits, referrals, and investigations. This project asks whether those different routes fall into distinguishable, clinically meaningful patterns ("archetypes"), and whether patients from more deprived areas are disproportionately likely to experience the more complex ones. It applies multichannel sequence analysis and unsupervised clustering to two years of pre-diagnostic primary-care activity for breast and lung cancer patients using CPRD data.
+
 This repository contains annotated R code from an MSc dissertation exploring whether clinically meaningful **pre-diagnostic pathway archetypes** can be identified from longitudinal primary-care data using multichannel sequence analysis and unsupervised clustering.
 
 The public repository focuses on the **analytical methodology** rather than reproducing the restricted-data analysis. No patient-level data, patient identifiers, source extracts, internal directory paths, project IDs, restricted medical-dictionary extracts, or disclosure-sensitive results are included.
@@ -65,6 +67,8 @@ Applies Ward.D2 hierarchical clustering to the multichannel distance matrices. C
 
 ### 07 — Deprivation analysis
 Examines whether pathway archetype membership varies across deprivation quintiles using descriptive distributions, chi-squared tests, standardised residuals, and ordered trend tests.
+
+The analysis identified a small number of distinct pre-diagnostic pathway archetypes, ranging from streamlined, low-activity routes to markedly longer and more complex ones. Full results, including the equity analysis by deprivation quintile, are reported in the dissertation itself.
 
 ## Software
 
