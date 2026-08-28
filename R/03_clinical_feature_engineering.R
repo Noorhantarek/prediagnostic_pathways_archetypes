@@ -94,7 +94,7 @@ pathway_obs[, obs_state_raw := fcase(
 )]
 
 # Screening was retained during clinical review but later collapsed into OTH for
-# the final sequence alphabet because it was not used as a separate pathway state.
+# the final sequence alphabet because it was not used as a separate pathway state. (Based on my research objectives)
 
 # ------------------------------------------------------------------------------
 # 4. Referral urgency feature
