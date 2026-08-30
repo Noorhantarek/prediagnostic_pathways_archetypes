@@ -44,6 +44,8 @@ R/
 ### 01 — Cohort construction
 Identifies eligible cancer patients, defines the index diagnosis, applies inclusion/exclusion criteria, and establishes the pre-diagnostic observation window.
 
+In this analysis, out of 7 million uniqe patients from 1,127 compiled CPRD aurum raw files; 156,280 patients, 26.7 million observation records were identifed and included in the analysis. 
+
 ### 02 — Pathway exploration
 Examines the observation, consultation, and referral channels before sequence construction, including temporal activity patterns and aggregate code-frequency summaries.
 
@@ -68,7 +70,7 @@ Applies Ward.D2 hierarchical clustering to the multichannel distance matrices. C
 ### 07 — Deprivation analysis
 Examines whether pathway archetype membership varies across deprivation quintiles using descriptive distributions, chi-squared tests, standardised residuals, and ordered trend tests.
 
-The analysis identified a small number of distinct pre-diagnostic pathway archetypes, ranging from streamlined, low-activity routes to markedly longer and more complex ones. Full results, including the equity analysis by deprivation quintile, are reported in the dissertation itself.
+The analysis identified 4 distinct pre-diagnostic pathway archetypes for Breast Cancer, and 3 for Lung cancer cohort, ranging from streamlined, low-activity routes to markedly longer and more complex ones. Full results, including the equity analysis by deprivation quintile, are reported in the dissertation itself.
 
 ## Software
 
@@ -92,6 +94,11 @@ The original research was conducted using restricted-access health data. This pu
 - code that would save restricted outputs is disabled/commented in the public version.
 
 The scripts are intended to demonstrate the analytical workflow and will not run as-is without appropriately structured, authorised source data.
+
+## What I'd do differently
+1. Restrict to a coding-stable period. Archetype membership tracked calendar year almost perfectly — median diagnosis year ran from 2001 to 2013 across breast archetypes. Restricting to 2015 onwards would test whether the archetypes are pathway features or artefacts of changing recording practice.
+2. Adjust for confounders. Archetypes differed by twelve years in median age. Multinomial regression of archetype membership on deprivation, adjusted for age, sex and calendar period, would establish whether the deprivation association is independent.
+3. Cluster stability. Internal validity indices assess coherence within the data analysed; they say nothing about whether the same solution would emerge from a different sample. Bootstrap resampling would test this.
 
 ## Author
 
