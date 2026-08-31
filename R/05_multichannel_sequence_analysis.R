@@ -137,7 +137,6 @@ summarise_distances <- function(d) {
 print(summarise_distances(dist_breast))
 print(summarise_distances(dist_lung))
 
-# Avoid printing specific patient sequences or identifiers in the public version.
 
 # saveRDS(dist_breast, file.path(derived_dir, 'distance_breast.rds'))
 # saveRDS(dist_lung,   file.path(derived_dir, 'distance_lung.rds'))
