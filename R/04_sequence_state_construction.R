@@ -87,6 +87,19 @@ consult_counts <- merge(
 
 consult_counts[, rate_30d := n_consult / (n_days / 30)]
 
+# Examine the empirical distribution before defining state thresholds.
+consult_rate_summary <- consult_counts[
+  ,
+  .(
+    median = median(consultation_rate, na.rm = TRUE),
+    p75    = quantile(consultation_rate, 0.75, na.rm = TRUE),
+    p90    = quantile(consultation_rate, 0.90, na.rm = TRUE)
+  ),
+  by = slot
+]
+
+print(consult_rate_summary)
+
 # Fixed thresholds were used in the study to create comparable intensity states
 # across all time slots.
 # Thresholds for LOW / MEDIUM / HIGH consultation intensity were selected after
