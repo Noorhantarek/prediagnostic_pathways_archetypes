@@ -11,7 +11,7 @@ library(data.table)
 # 1. Define non-uniform temporal slots
 # ------------------------------------------------------------------------------
 # The 24-month pre-diagnostic period is represented using broader intervals early
-# in the pathway and finer monthly intervals closer to diagnosis.
+# in the pathway and finer monthly intervals closer to diagnosis/index date.
 
 slot_def <- data.table(
   slot = 1:8,
