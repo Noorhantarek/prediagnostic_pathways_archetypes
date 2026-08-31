@@ -89,6 +89,10 @@ consult_counts[, rate_30d := n_consult / (n_days / 30)]
 
 # Fixed thresholds were used in the study to create comparable intensity states
 # across all time slots.
+# Thresholds for LOW / MEDIUM / HIGH consultation intensity were selected after
+# inspecting the empirical distribution of consultation rates across the
+# analytical cohort.
+
 consult_counts[, cons_state := fcase(
   rate_30d < 2, 'LOW',
   rate_30d < 4, 'MED',
