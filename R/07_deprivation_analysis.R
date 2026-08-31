@@ -1,6 +1,6 @@
 # ==============================================================================
 # 07_deprivation_analysis.R
-# Equity analysis: pathway archetypes and area-level deprivation
+# Equity analysis: pathway archetypes and patient-level deprivation (IMD)
 # ==============================================================================
 # Public portfolio version.
 # No source-data counts, p-values, or final archetype labels are hard-coded.
@@ -36,7 +36,7 @@ profile <- merge(
 )
 
 # ------------------------------------------------------------------------------
-# 2. Archetype distribution within deprivation quintiles
+# 2. Deprivation quintiles (Patient-level IMD) across archetypes clusters
 # ------------------------------------------------------------------------------
 
 imd_distribution <- profile[
@@ -76,10 +76,10 @@ results_by_cancer <- lapply(
 )
 
 # ------------------------------------------------------------------------------
-# 4. Ordinal trend across IMD quintiles
+# 4. Ordinal trend of IMD quintiles across clusters
 # ------------------------------------------------------------------------------
-# For each archetype, test whether its share changes monotonically across ordered
-# deprivation quintiles. Interpretation should consider effect size and pattern,
+# For each IMD quintile, test whether its share changes monotonically across archetypes
+# clusters. Interpretation should consider effect size and pattern,
 # not the p-value alone.
 
 trend_test_by_cluster <- function(dt) {
@@ -109,7 +109,7 @@ trend_results <- rbindlist(
 print(trend_results)
 
 # ------------------------------------------------------------------------------
-# 5. Visualise archetype share across deprivation quintiles
+# 5. Visualise quintiles distribution across clusters
 # ------------------------------------------------------------------------------
 
 plot_imd_trends <- function(dt, cancer_label) {
@@ -124,7 +124,7 @@ plot_imd_trends <- function(dt, cancer_label) {
       labels = c('Q1\nleast deprived', 'Q2', 'Q3', 'Q4', 'Q5\nmost deprived')
     ) +
     labs(
-      title = paste0(cancer_label, ': pathway archetype share by deprivation quintile'),
+      title = paste0(cancer_label, ': Deprivation quintiles distribution across archetypes'),
       x = NULL,
       y = '% of patients within quintile',
       colour = 'Cluster'
